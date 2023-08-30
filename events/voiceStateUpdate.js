@@ -1,9 +1,28 @@
 const { Events } = require('discord.js')
 
+// Map to store the last event timestamp for each user
+const userCooldowns = new Map()
+
+// Cooldown duration in milliseconds
+const COOLDOWN_DURATION = 10000 // 10 seconds
+
 module.exports = {
   name: Events.VoiceStateUpdate,
   execute(oldState, newState, telegramBot, chatId) {
     try {
+      const userId = newState.member.id
+      const currentTime = Date.now()
+
+      // Check if the user is still in cooldown
+      if (
+        userCooldowns.has(userId) &&
+        currentTime - userCooldowns.get(userId) < COOLDOWN_DURATION
+      ) {
+        return // User is still in cooldown
+      }
+
+      userCooldowns.set(userId, currentTime)
+
       if (!oldState.channel && newState.channel) {
         const user = newState.member.displayName
         const channelName = newState.channel.name
