@@ -11,12 +11,6 @@ const client = new Client({
 })
 
 const telegramBot = new TelegramBot(telegramToken, { polling: true })
-
-telegramBot.on('message', (msg) => {
-  const chatId = msg.chat.id
-  bot.sendMessage(chatId, 'Received your message')
-})
-
 const eventsPath = path.join(__dirname, 'events')
 const eventFiles = fs
   .readdirSync(eventsPath)
